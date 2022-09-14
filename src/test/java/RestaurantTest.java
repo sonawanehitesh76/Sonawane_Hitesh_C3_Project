@@ -3,6 +3,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,38 +46,35 @@ class RestaurantTest {
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>MENU<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     @Test
     public void adding_item_to_menu_should_increase_menu_size_by_1(){
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant =new Restaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        restaurant.addToMenu("Sweet corn soup",119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
-
         int initialMenuSize = restaurant.getMenu().size();
         restaurant.addToMenu("Sizzling brownie",319);
         assertEquals(initialMenuSize+1,restaurant.getMenu().size());
     }
     @Test
     public void removing_item_from_menu_should_decrease_menu_size_by_1() throws itemNotFoundException {
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant =new Restaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        restaurant.addToMenu("Sweet corn soup",119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
-
         int initialMenuSize = restaurant.getMenu().size();
         restaurant.removeFromMenu("Vegetable lasagne");
         assertEquals(initialMenuSize-1,restaurant.getMenu().size());
     }
     @Test
     public void removing_item_that_does_not_exist_should_throw_exception() {
-        LocalTime openingTime = LocalTime.parse("10:30:00");
-        LocalTime closingTime = LocalTime.parse("22:00:00");
-        restaurant =new Restaurant("Amelie's cafe","Chennai",openingTime,closingTime);
-        restaurant.addToMenu("Sweet corn soup",119);
-        restaurant.addToMenu("Vegetable lasagne", 269);
-
-        assertThrows(itemNotFoundException.class,
-                ()->restaurant.removeFromMenu("French fries"));
+        assertThrows(itemNotFoundException.class, ()->restaurant.removeFromMenu("French fries"));
     }
     //<<<<<<<<<<<<<<<<<<<<<<<MENU>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    //ORDER VALUE//
+    @Test
+    public void calculate_the_total_order_value_of_an_order_and_verify_its_added_correctly() {
+        //adding a few more items to the menu before main test
+        restaurant.addToMenu("Cheese Pizza", 275);
+        restaurant.addToMenu("Veg Pizza", 150);
+
+        List<String> orderItems = Arrays.asList("Sweet corn soup","Cheese Pizza","Veg Pizza");
+        //TDD approach - The method needs to be implemented
+        int totalPrice = restaurant.totalOrderValue(orderItems);
+        //119 + 275 + 150 = 544
+        int expectTotalPrice = 544;
+        assertEquals(expectTotalPrice, totalPrice);
+    }
+    //ORDER VALUE//
 }
